@@ -1,0 +1,519 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Development Space</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3/dist/email.min.js"></script>
+
+    <style>
+
+        /* ===== BASE ===== */
+        body {
+            margin: 0;
+            font-family: 'Segoe UI';
+            background: radial-gradient(circle at top,#ffffff,#f2f2f2,#eaeaea);
+        }
+
+        /* ===== HEADER ===== */
+        .header {
+            position: fixed;
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            gap: 80px;
+            padding: 15px;
+            z-index: 10;
+        }
+
+            .header img {
+                height: 85px;
+            }
+
+        /* ===== HERO ===== */
+        .hero {
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+        }
+
+        .title {
+            font-size: 80px;
+            font-weight: 900;
+            background: linear-gradient(45deg,#c4ab73,#413100);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .subtitle {
+            font-size: 32px;
+            margin-top: 10px;
+        }
+
+        .hero-img {
+            width: 430px;
+            margin: 25px;
+            border-radius: 20px;
+        }
+
+        /* ===== BUTTON ===== */
+        .btn {
+            padding: 18px 45px;
+            font-size: 22px;
+            border: none;
+            border-radius: 30px;
+            background: #c4ab73;
+            cursor: pointer;
+        }
+
+        /* ===== LOGIN ===== */
+        .login {
+            display: none;
+            height: 100vh;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .box {
+            width: 650px;
+            padding: 60px;
+            background: white;
+            border-radius: 30px;
+            text-align: center;
+        }
+
+        input {
+            width: 100%;
+            padding: 18px;
+            font-size: 20px;
+            margin-top: 15px;
+            border-radius: 12px;
+            border: 1px solid #ccc;
+        }
+
+        /* ===== DASHBOARD ===== */
+        #dash {
+            display: none;
+            position: relative;
+            z-index: 1;
+        }
+
+        .main-title {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 40px; /* مسافة بينهم */
+            font-size: 48px; /* 👈 تكبير */
+            font-weight: 900;
+            text-align: center;
+            /* نفس ستايل العنوان الرئيسي */
+            background: linear-gradient(45deg,#c4ab73,#413100);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        /* تحسين على الجوال */
+        @media(max-width:768px) {
+            .main-title {
+                flex-direction: column;
+                font-size: 32px;
+                gap: 10px;
+            }
+        }
+
+
+
+        .dashboard-hero {
+            height: 55vh;
+            background: url('devSpace.png') center/cover no-repeat;
+            position: relative;
+        }
+
+            .dashboard-hero::after {
+                content: "";
+                position: absolute;
+                inset: 0;
+                background: linear-gradient(to bottom,rgba(0,0,0,0.2),rgba(255,255,255,0.9));
+                pointer-events: none;
+            }
+
+        /* ===== OPTIONS ===== */
+        .options {
+            background: #f4f5f7;
+            padding: 50px 20px;
+        }
+
+        .frame {
+            max-width: 1700px;
+            margin: auto;
+            margin-top: -320px; /* 👈 زودنا الرفع (كان -80px) */
+            background: white;
+            padding: 80px 60px;
+            border-radius: 35px;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.12);
+            position: relative;
+            z-index: 1;
+            min-height: 650px;
+        }
+        /* ===== GRID ===== */
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(3,1fr);
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .card {
+            padding: 45px;
+            background: #c4ab73;
+            border-radius: 22px;
+            text-align: center;
+            font-size: 22px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+            .card:hover {
+                transform: scale(1.05);
+            }
+
+        /* ===== LOGOUT ===== */
+        .logout {
+            position: absolute;
+            bottom: 60px; /* 👈 تحت */
+            left: 80px; /* 👈 يسار */
+        }
+
+        /* ===== POPUP ===== */
+        /* ===== POPUP OVERLAY ===== */
+        .popup {
+            position: fixed;
+            inset: 0;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(6px);
+            z-index: 9999;
+        }
+
+        /* ===== POPUP BOX ===== */
+        .popup-box {
+            width: 65%;
+            height: 75%;
+            background: linear-gradient(145deg,#ffffff,#f8f8f8);
+            border-radius: 35px;
+            padding: 50px;
+            display: flex;
+            flex-direction: column;
+            gap: 25px;
+            box-shadow: 0 40px 120px rgba(0,0,0,0.25);
+            animation: popIn 0.3s ease;
+        }
+
+        @keyframes popIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        /* ===== HEADER ===== */
+        .popup-header h2 {
+            font-size: 34px;
+            text-align: center;
+            font-weight: 900;
+            background: linear-gradient(45deg,#c4ab73,#413100);
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        .welcome-text {
+            text-align: center;
+            font-size: 40px;
+            color: #444;
+        }
+
+            .welcome-text span {
+                display: block;
+                font-size: 40px;
+                color: #777;
+                margin-top: 5px;
+            }
+
+        /* ===== TEXTAREA ===== */
+        textarea {
+            width: 100%;
+            height: 280px;
+            font-size: 20px;
+            border-radius: 18px;
+            border: 1px solid #ddd;
+            padding: 18px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+            textarea:focus {
+                border-color: #c4ab73;
+                box-shadow: 0 0 10px rgba(196,171,115,0.3);
+            }
+
+        /* ===== BUTTONS ===== */
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .btn-send {
+            padding: 14px 40px;
+            border-radius: 25px;
+            border: none;
+            background: linear-gradient(45deg,#c4ab73,#a88a55);
+            color: white;
+            font-size: 18px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+            .btn-send:hover {
+                transform: scale(1.05);
+                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            }
+
+        .btn-back {
+            padding: 14px 40px;
+            border-radius: 25px;
+            border: none;
+            background: #eee;
+            font-size: 18px;
+            cursor: pointer;
+        }
+
+        /* ===== ACTIONS ===== */
+        .actions {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .btn-small {
+            padding: 12px 30px;
+            border-radius: 20px;
+            background: #c4ab73;
+            cursor: pointer;
+        }
+
+        /* ===== SUCCESS ===== */
+        .success {
+            position: fixed;
+            inset: 0;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            font-size: 40px;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(6px);
+            z-index: 9999;
+        }
+
+        /* نفس حجم البوب أب */
+        .success-box {
+            width: 65%;
+            height: 75%;
+            background: white;
+            border-radius: 35px;
+            padding: 50px;
+            text-align: center;
+            box-shadow: 0 40px 120px rgba(0,0,0,0.25);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- HEADER -->
+    <div class="header">
+        <img src="MAJEDALFUTTAIMNEW-removebg-preview.png">
+        <img src="carrefourNewLogo-removebg-preview.png">
+    </div>
+
+    <!-- HERO -->
+    <div class="hero" id="hero">
+        <div class="title">DEVELOPMENT SPACE</div>
+        <div class="subtitle">المساحة التطويرية</div>
+        <img class="hero-img" src="devSpace.png">
+        <button class="btn" onclick="openLogin()">Login / تسجيل الدخول</button>
+    </div>
+
+    <!-- LOGIN -->
+    <div class="login" id="login">
+        <div class="box">
+            <h2>Login / تسجيل الدخول</h2>
+
+            <input id="name" placeholder="Full Name / الاسم">
+            <input id="email" placeholder="Email">
+            <input id="department" placeholder="Department / القسم">
+
+            <button class="btn" onclick="loginUser()">Login</button>
+
+        </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <div id="dash">
+
+        <div class="dashboard-hero"></div>
+
+        <div class="options">
+            <div class="frame">
+
+                <button class="btn logout" onclick="logout()">Logout</button>
+
+                <h2 class="main-title">
+                    <span>How would you like to help us?</span>
+                    <span>كيف حاب تساعدنا؟</span>
+                </h2>
+
+                <div class="grid">
+
+                    <div class="card" onclick="openPopup('Increase Sales')">Increase Sales<br>زيادة المبيعات</div>
+                    <div class="card" onclick="openPopup('Customer Experience')">Customer Experience<br>تجربة العميل</div>
+                    <div class="card" onclick="openPopup('Operations')">Operations<br>العمليات</div>
+                    <div class="card" onclick="openPopup('Employees')">Employees<br>الموظفين</div>
+                    <div class="card" onclick="openPopup('Technology')">Technology<br>تقنية</div>
+                    <div class="card" onclick="openPopup('Other')">Other<br>اخرى</div>
+
+                </div>
+
+            </div>
+        </div>
+    </div>
+
+    <!-- POPUP -->
+    <div class="popup" id="popup">
+        <div class="popup-box">
+
+            <div class="popup-header">
+                <h2 id="cat"></h2>
+                <p class="welcome-text">
+                    أهلاً بك  تفضل اكتب فكرتك<br>
+                    <span>Welcome  please write your idea</span>
+                </p>
+            </div>
+
+            <textarea id="desc" placeholder="اكتب فكرتك هنا... / Write your idea here..."></textarea>
+
+            <div class="actions">
+                <button class="btn-send" onclick="sendIdea()">Send / ارسال</button>
+                <button class="btn-back" onclick="closePopup()">Back / رجوع</button>
+
+                
+            </div>
+
+        </div>
+    </div>
+
+    <div class="success" id="success">
+        <h1>
+            شكراً لك 🌟<br>
+            <span>Thank You</span>
+        </h1>
+       
+        <p>
+            تم ارسال فكرتك بنجاح<br>
+            <span>Your idea has been sent successfully</span>
+        </p>  
+
+        <button class="btn" onclick="backToDash()">
+            الرجوع للصفحة الرئيسية / Back to Dashboard
+        </button>
+    </div>
+    <script>
+
+
+
+emailjs.init("jAJl50AYu4tu2ldLW");
+
+let category="";
+
+function openLogin(){
+hero.style.display="none";
+login.style.display="flex";
+}
+
+function loginUser(){
+
+let name = document.getElementById("name").value;
+let email = document.getElementById("email").value;
+let dept = document.getElementById("department").value;
+
+if(name.trim() === "" || email.trim() === "" || dept.trim() === ""){
+alert("All fields required / كل الحقول مطلوبة");
+return;
+}
+
+user = {name,email,dept};
+
+login.style.display="none";
+dash.style.display="block";
+}
+
+
+
+
+function logout(){
+document.getElementById("dash").style.display="none";
+document.getElementById("hero").style.display="flex";
+}
+function openPopup(c){
+category=c;
+popup.style.display="flex";
+cat.innerText=c;
+}
+
+function closePopup(){
+popup.style.display="none";
+}
+
+function sendIdea(){
+
+let message = document.getElementById("desc").value;
+
+if(message.trim() === ""){
+alert("Write your idea first / اكتب الفكرة أولاً");
+return;
+}
+
+emailjs.send("service_23cv7sj","template_b681sdm",{
+to_email:"Leennalbahli@gmail.com",
+from_name:user.name,
+from_email:user.email,
+department:user.dept,
+category:category,
+message:message
+});
+
+popup.style.display="none";
+success.style.display="flex";
+}
+
+
+function backToDash(){
+document.getElementById("success").style.display="none";
+document.getElementById("dash").style.display="block";
+}
+
+    </script>
+
+</body>
+</html>
